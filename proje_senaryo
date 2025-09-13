@@ -1,1 +1,59 @@
+🎬 Senaryo: “Booking.com Veri Macerası”
 
+Bir turizm şirketi düşünün: HappyBooking.
+Bu şirket, otellerden ve müşterilerden gelen rezervasyon verilerini topluyor. Ama sorun şu: Veriler çok dağınık geliyor. Kimisi Excel dosyası, kimisi JSON API’si, kimisi de canlı (streaming) veri…
+
+Şirketin amacı:
+👉 Bu verileri düzenli bir şekilde toplayıp saklamak, temizlemek ve en sonunda müşteri davranışlarını anlamak için güzel raporlar hazırlamak.
+
+🎯 Görevimiz
+
+HappyBooking şirketi sizi Data Engineer ekibine aldı. Sizden istenen:
+
+Ham veriyi toplamak (müşteri ve rezervasyon bilgileri)
+
+Veriyi temizleyip düzenlemek (yanlış tarihleri, eksik müşteri bilgilerini düzeltmek)
+
+Analiz için uygun hale getirmek (ör. “En çok hangi şehirde rezervasyon yapılıyor?”, “Müşteriler en çok hangi tarihlerde tatil seçiyor?”)
+
+Power BI dashboard hazırlamak (yönetime sunulacak raporlar)
+
+🔄 Adımlar (Öğrenci Gözüyle)
+
+Bronze Katmanı (Ham Veri):
+
+Dosyaları olduğu gibi sisteme yükle (ör. reservation_raw.csv).
+
+Henüz hiç temizleme yapma.
+
+Silver Katmanı (Temizlenmiş Veri):
+
+Boş satırları temizle, yanlış tarih formatlarını düzelt.
+
+Aynı müşterinin birden fazla kaydını düzenle.
+
+Gold Katmanı (Raporlama için Veri):
+
+“Şehirlere göre rezervasyon sayısı” gibi özet tablolar çıkar.
+
+“En yoğun tatil ayları” gibi iş kuralları uygula.
+
+Raporlama:
+
+Power BI üzerinde bir dashboard yap:
+
+En popüler şehirler
+
+Aylara göre rezervasyon dağılımı
+
+Müşteri sayısındaki artış
+
+🧩 Öğrencilerden Beklenen
+
+Her öğrenci ya da grup, ham veriyi alıp bu adımları izleyerek kendi veri hattını (pipeline) kuracak.
+
+Azure kullanılıyorsa: ADF + Databricks + Synapse + Power BI
+
+Fabric kullanılıyorsa: Eventstream + Lakehouse + Data Warehouse + Power BI
+
+Sonunda herkesin elinde: HappyBooking Yönetim Dashboard’u olacak 🎉
