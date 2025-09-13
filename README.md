@@ -45,7 +45,7 @@ Data Sources (Kaggle CSV, APIs)        Real-time Simulator (Python)
         |                           
         +——> Synapse Serverless / Dedicated SQL Pools ——> Power BI
         |
-        +——> Azure ML (training & scoring) ——> Batch/Real-time Scores to Gold/Synapse
+        +——> Batch/Real-time Scores to Gold/Synapse
 ```
 
 ---
@@ -58,7 +58,6 @@ Data Sources (Kaggle CSV, APIs)        Real-time Simulator (Python)
 * **Azure Event Hubs:** Gerçek zamanlı olay akışı girişi
 * **Azure Stream Analytics** (opsiyonel) **veya Databricks Structured Streaming:** Stream’i Bronze’a yazma ve basit zenginleştirme
 * **Azure Synapse Analytics:** Gold veriler için SQL Query ve Semantic Layer
-* **Azure Machine Learning:** Model eğitimi/deploy (iptal olasılığı / sonraki destinasyon tahmini)
 * **Power BI:** Raporlama ve dashboard
 * **Azure Monitor / Log Analytics:** İzleme, alarmlar
 * **Key Vault:** Gizli anahtarlar ve bağlantı stringleri
@@ -88,10 +87,7 @@ repo-root/
   │   ├─ 02_stream_to_bronze.py
   │   ├─ 03_silver_transformations.py
   │   ├─ 04_gold_business_marts.py
-  │   ├─ 05_ml_feature_build_train.py
-  │   └─ 06_ml_batch_scoring.py
   ├─ pipelines/ (ADF JSON tanımları)
-  ├─ ml/ (AML pipelines, conda/env)
   ├─ powerbi/ (pbix veya dataset tanımları)
   ├─ tests/ (great_expectations, pytest)
   └─ docs/ (readme, runbooks)
@@ -131,23 +127,16 @@ repo-root/
 * Gold klasöründeki Delta/Parquet tablolarına **Serverless SQL** ile external table veya Dedicated SQL Pool’a yükleme
 * View/Stored Procedure ile semantic layer
 
-### 7.6 ML Çalışması (Azure ML + MLflow)
-
-* **Hedef:** `is_canceled` tahmini veya **sonraki destinasyon tahmini**
-* Feature set: lead\_time, arrival\_date parçaları, season, adr, total\_of\_special\_requests, review\_sentiment\_score vb.
-* AML Pipeline: data prep (read Gold), train/validate (XGBoost/LightGBM), register model, batch scoring notebook’u
-* Skor sonuçlarını Gold’a veya Synapse’e yazın (`fact_booking_scores`)
-
-### 7.7 Power BI
+### 7.6 Power BI
 
 * Kaynak: Synapse SQL endpoint veya Gold Parquet/Delta
 * Sayfalar: Yönetim Özeti, Operasyon (iptal & doluluk), Fiyat & Gelir, Coğrafi dağılım, ML skor dağılımı
 
-### 7.8 Orkestrasyon ve Zamanlama
+### 7.9 Orkestrasyon ve Zamanlama
 
 * ADF Pipeline:
 
-  * Activity sırası: **Copy (batch)** → **Databricks Notebook (bronze→silver)** → **Databricks (silver→gold)** → **Synapse SQL scripts** → **AML batch scoring** → **Power BI dataset refresh**
+  * Activity sırası: **Copy (batch)** → **Databricks Notebook (bronze→silver)** → **Databricks (silver→gold)** → **Synapse SQL scripts** → **Power BI dataset refresh**
 * Trigger: Günlük (batch), saatlik (stream append kontrol), manuel tetikleme
 
 ### 7.9 İzleme & Kalite
@@ -283,34 +272,11 @@ AS SELECT * FROM OPENROWSET(
 ) AS rows;
 ```
 
-### 9.6 Azure ML – Basit Eğitim Akışı (psödo)
-
-```python
-from sklearn.model_selection import train_test_split
-from lightgbm import LGBMClassifier
-import mlflow
-
-mlflow.sklearn.autolog()
-
-df = spark.read.format('delta').load('/mnt/datalake/booking_gold/fact_booking').toPandas()
-X = df[["lead_time","adr","total_of_special_requests","review_sentiment_score"]]
-y = df["is_canceled"]
-Xtr, Xte, ytr, yte = train_test_split(X, y, test_size=0.2, random_state=42)
-
-with mlflow.start_run():
-    model = LGBMClassifier()
-    model.fit(Xtr, ytr)
-    mlflow.sklearn.log_model(model, "model")
-```
-
----
-
 ## 10) Test, Doğrulama ve Kabul Kriterleri
 
 * **Veri Kalitesi:** Zorunlu alanların doluluğu, tarih aralığı kontrolleri, benzersiz `booking_id`
 * **İzlenebilirlik:** ADF/Databricks job’larının başarılı koşuları, checkpoint dosyaları, SLA raporu
 * **Performans:** Batch ingest < X dakika, günlük 1M satırda silver dönüşümleri < Y dakika
-* **Doğruluk:** ML model AUC/Accuracy eşiği (örn. AUC ≥ 0.70), tutarlı agregasyonlar
 * **Güvenlik:** Erişimler RBAC ile kısıtlı, secret’lar Key Vault’ta
 
 ---
@@ -320,7 +286,6 @@ with mlflow.start_run():
 * Mimari tasarım (20%) – Katmanlı yapı, servis entegrasyonu
 * Veri ingest ve dönüşümler (25%) – ADF + Databricks kalitesi
 * Veri modeli ve Gold tabakası (15%) – Boyut-fakt yapısı, performans
-* ML akışı (15%) – Feature’lar, deney izleme, skor yazımı
 * Dashboard (15%) – KPI’lar, kullanılabilirlik
 * İzleme ve kalite (10%) – Testler, alarmlar
 
@@ -332,7 +297,6 @@ with mlflow.start_run():
 * **Gün 2:** Bronze→Silver dönüşümleri, veri kalitesi
 * **Gün 3:** Silver→Gold, Synapse external tables, SQL görünümleri
 * **Gün 4:** Streaming hat, Event Hubs + Structured Streaming/ASA
-* **Gün 5:** ML eğitim + batch scoring, Power BI, sunum ve rapor
 
 (Alternatif: 2–3 günlük yoğunlaştırılmış sürüm; ML veya streaming kısıtlı tutulur.)
 
