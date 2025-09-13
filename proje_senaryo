@@ -1,59 +1,126 @@
-🎬 Senaryo: “Booking.com Veri Macerası”
+🎬 Senaryo: “Booking.com Veri Macerası – Öğrenci Rehberi”
 
 Bir turizm şirketi düşünün: HappyBooking.
-Bu şirket, otellerden ve müşterilerden gelen rezervasyon verilerini topluyor. Ama sorun şu: Veriler çok dağınık geliyor. Kimisi Excel dosyası, kimisi JSON API’si, kimisi de canlı (streaming) veri…
+Bu şirket, Avrupa’daki otellerden ve müşterilerden gelen rezervasyon verilerini topluyor. Ama sorun şu: veriler çok dağınık! Kimisi Excel dosyası, kimisi JSON API’si, bazıları da canlı (stream) veri olarak geliyor.
 
 Şirketin amacı:
-👉 Bu verileri düzenli bir şekilde toplayıp saklamak, temizlemek ve en sonunda müşteri davranışlarını anlamak için güzel raporlar hazırlamak.
+👉 Bu verileri düzenli bir şekilde toplayıp saklamak, temizlemek, ve en sonunda müşteri davranışlarını anlamak için güzel raporlar hazırlamak.
 
-🎯 Görevimiz
+🎯 Öğrenci Görevleri
 
-HappyBooking şirketi sizi Data Engineer ekibine aldı. Sizden istenen:
+HappyBooking, sizi Data Engineer ekibine aldı. Görevleriniz:
 
-Ham veriyi toplamak (müşteri ve rezervasyon bilgileri)
+Ham veriyi toplamak
 
-Veriyi temizleyip düzenlemek (yanlış tarihleri, eksik müşteri bilgilerini düzeltmek)
+Dosyaları, API verilerini veya simülasyonla üretilmiş stream verilerini sisteme almak.
 
-Analiz için uygun hale getirmek (ör. “En çok hangi şehirde rezervasyon yapılıyor?”, “Müşteriler en çok hangi tarihlerde tatil seçiyor?”)
+Henüz hiç temizleme yapmayacağız.
 
-Power BI dashboard hazırlamak (yönetime sunulacak raporlar)
+Veriyi temizlemek ve düzenlemek
 
-🔄 Adımlar (Öğrenci Gözüyle)
+Boş satırları veya hatalı tarihleri düzeltmek.
 
-Bronze Katmanı (Ham Veri):
+Tekrarlanan kayıtları kaldırmak.
 
-Dosyaları olduğu gibi sisteme yükle (ör. reservation_raw.csv).
+Eksik verileri mantıklı bir şekilde tamamlamak (örneğin, eksik şehir bilgisi → “Unknown”).
 
-Henüz hiç temizleme yapma.
+Analiz için veri hazırlamak
 
-Silver Katmanı (Temizlenmiş Veri):
+Hangi şehirde kaç rezervasyon var?
 
-Boş satırları temizle, yanlış tarih formatlarını düzelt.
+Hangi aylar yoğun?
 
-Aynı müşterinin birden fazla kaydını düzenle.
+Ortalama konaklama süresi nedir?
 
-Gold Katmanı (Raporlama için Veri):
+Rapor ve Dashboard hazırlamak
 
-“Şehirlere göre rezervasyon sayısı” gibi özet tablolar çıkar.
+Power BI ile en popüler şehirler, aylara göre rezervasyon dağılımı, müşteri sayısındaki değişim gibi KPI’lar göstermek.
 
-“En yoğun tatil ayları” gibi iş kuralları uygula.
+🔄 Adımlar (Öğrenci Rehberi)
+1️⃣ Bronze Katmanı – Ham Veri
 
-Raporlama:
+Görev: Veriyi olduğu gibi saklamak.
 
-Power BI üzerinde bir dashboard yap:
+Örnek dosya: reservation_raw.csv
 
-En popüler şehirler
+Yapılacaklar:
 
-Aylara göre rezervasyon dağılımı
+Dosyaları ADLS Gen2 (Azure) veya Lakehouse (Fabric) içine yükleyin.
 
-Müşteri sayısındaki artış
+Stream verisi simülatörü çalıştırabilirsiniz (Event Hubs veya Eventstream).
 
-🧩 Öğrencilerden Beklenen
+Amaç: Her şeyin kaynağını saklamak, ileride veri kalitesi kontrolleri için referans oluşturmak.
 
-Her öğrenci ya da grup, ham veriyi alıp bu adımları izleyerek kendi veri hattını (pipeline) kuracak.
+2️⃣ Silver Katmanı – Temizlenmiş Veri
 
-Azure kullanılıyorsa: ADF + Databricks + Synapse + Power BI
+Görev: Ham veriyi temiz ve kullanıma hazır hale getirmek.
 
-Fabric kullanılıyorsa: Eventstream + Lakehouse + Data Warehouse + Power BI
+Yapılacaklar:
 
-Sonunda herkesin elinde: HappyBooking Yönetim Dashboard’u olacak 🎉
+Null değerleri temizle veya mantıklı default değer atayın.
+
+Tarih formatlarını standart hâle getirin (YYYY-MM-DD).
+
+Duplicate kayıtları kaldırın (booking_id veya user_id+hotel_id).
+
+Otel ve şehir adlarını normalize edin.
+
+Amaç: Analiz ve raporlamaya hazır veri oluşturmak.
+
+3️⃣ Gold Katmanı – Business/Reporting Veri
+
+Görev: İş kuralları ve özet tablolar oluşturmak.
+
+Yapılacaklar:
+
+Boyut tabloları oluşturun: dim_hotel, dim_city, dim_date.
+
+Fakt tablosu oluşturun: fact_booking (rezervasyon sayısı, iptal durumu, gelir vb.).
+
+KPI’lar:
+
+Şehirlere göre rezervasyon sayısı
+
+Aylara göre yoğunluk
+
+İptal oranı
+
+Amaç: Yönetim için hızlı rapor üretilecek tablo oluşturmak.
+
+4️⃣ Power BI Dashboard
+
+Görev: Gold katmanı kullanarak görselleştirme yapmak.
+
+Önerilen sayfalar:
+
+Popüler Şehirler: Şehir bazlı rezervasyon sayısı
+
+Rezervasyon Trendleri: Ay bazında yoğunluk ve iptal oranları
+
+Müşteri Analizi: Yeni vs. tekrar eden müşteriler
+
+Amaç: Yönetim dashboard’u ve karar destek aracı hazırlamak.
+
+5️⃣ Orkestrasyon ve İzleme
+
+Azure Kullanıyorsanız:
+
+ADF Pipelines: Batch ve stream veri akışını kontrol etmek.
+
+Azure Monitor / Log Analytics: Pipeline ve notebook job’larını izlemek.
+
+Fabric Kullanıyorsanız:
+
+Eventstream & Lakehouse Notebooks: Ham veriden Gold’a kadar pipeline’ı kurmak.
+
+Warehouse Monitoring: Veri akışını ve tabloları takip etmek.
+
+🧩 Öğrencilerden Beklenen Çıktılar
+
+Her grup/öğrenci, kendi veri hattını (pipeline) kuracak.
+
+Bronze → Silver → Gold katmanlarını oluşturacak.
+
+Power BI dashboard’u hazırlayacak ve yönetim sunumu yapacak.
+
+Sonuç: HappyBooking Yönetim Dashboard’u 🎉
