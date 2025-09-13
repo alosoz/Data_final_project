@@ -1,4 +1,46 @@
-Harika — proje çok iyi düşünülmüş ve gerçek dünyede kullanışlı. Aşağıda senin hedefin (iki haftada, öğrenen öğrencilere uygun, ML olmadan) baz alınarak projeyi basitleştirilmiş, uygulanabilir ve öğretici bir sürüme uyarladım. Ayrıca hangi düzeltmeler/eklemeler gerektiğini, hangi servisleri zorunlu veya opsiyonel tutacağını, gün-gün (2 haftalık) yol haritasını, kabul kriterlerini ve hafif ama yeterli test/kalite kontrollerini ekledim. Hemen uygulamaya koyabileceğin şekilde pratik öneriler de var.
+📊 Rapor: Booking Pipeline – Azure Data Platform
+1. Veri Kaynağı → Ingestion
+
+Araç: Azure Data Factory (ADF) Pipeline
+
+İş: Kaynak dosyalar (CSV/JSON) veya API’den veri alımı
+
+Çıktı: Bronze Layer (Data Lake Storage Gen2 – ham veri)
+
+2. Bronze → Silver (Temizleme & Transformasyon)
+
+Araç: Azure Databricks (PySpark)
+
+İş: Veri kalitesi kontrolleri, schema enforcement, null/duplicate temizliği
+
+Çıktı: Silver Layer (temizlenmiş & analize hazır veri)
+
+3. Silver → Gold (Modelleme & Hazırlık)
+
+Araç: Databricks veya Azure Synapse SQL Pools
+
+İş: Join, aggregation, business rules uygulanması
+
+Çıktı: Gold Layer (business reporting tablosu)
+
+4. Analiz & Görselleştirme
+
+Araç: Power BI (Azure Synapse bağlantısı üzerinden)
+
+İş: Dashboard ve raporların hazırlanması
+
+Çıktı: Self-service BI & raporlama
+
+5. Orkestrasyon & İzleme
+
+Araç:
+
+ADF (pipeline scheduling)
+
+Azure Monitor / Log Analytics (alert & izleme)
+
+
+
 
 Özet (hedef)
 
