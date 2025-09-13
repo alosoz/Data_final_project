@@ -1,126 +1,84 @@
-🎬 Senaryo: “Booking.com Veri Macerası – Öğrenci Rehberi”
+🎬 Senaryo: “Booking.com Veri Macerası – Fabric Güncel”
 
 Bir turizm şirketi düşünün: HappyBooking.
-Bu şirket, Avrupa’daki otellerden ve müşterilerden gelen rezervasyon verilerini topluyor. Ama sorun şu: veriler çok dağınık! Kimisi Excel dosyası, kimisi JSON API’si, bazıları da canlı (stream) veri olarak geliyor.
+Şirket, otellerden ve müşterilerden gelen rezervasyon verilerini topluyor. Ama veriler çok dağınık: Excel, JSON API ve canlı (stream) veri geliyor.
 
 Şirketin amacı:
-👉 Bu verileri düzenli bir şekilde toplayıp saklamak, temizlemek, ve en sonunda müşteri davranışlarını anlamak için güzel raporlar hazırlamak.
+👉 Bu verileri düzenli bir şekilde toplamak, temizlemek ve müşteri davranışlarını anlamak için dashboardlar hazırlamak.
 
 🎯 Öğrenci Görevleri
 
-HappyBooking, sizi Data Engineer ekibine aldı. Görevleriniz:
+HappyBooking sizi Data Engineer ekibine aldı. Görevleriniz:
 
 Ham veriyi toplamak
 
-Dosyaları, API verilerini veya simülasyonla üretilmiş stream verilerini sisteme almak.
-
-Henüz hiç temizleme yapmayacağız.
+Dosyalar ve API verilerini Eventstream veya Lakehouse Bronze katmanına almak.
 
 Veriyi temizlemek ve düzenlemek
 
-Boş satırları veya hatalı tarihleri düzeltmek.
+Null/duplicate/yanlış veri temizliği.
 
-Tekrarlanan kayıtları kaldırmak.
+Silver katmanı oluşturmak.
 
-Eksik verileri mantıklı bir şekilde tamamlamak (örneğin, eksik şehir bilgisi → “Unknown”).
+Business/Reporting veri hazırlamak
 
-Analiz için veri hazırlamak
+Gold tabakası oluşturmak (KPI’lar, özet tablolar).
 
-Hangi şehirde kaç rezervasyon var?
+Streaming veri için direkt raporlama
 
-Hangi aylar yoğun?
+Eventstream ile gelen verileri Kusto Table (KTM)’a yaz.
 
-Ortalama konaklama süresi nedir?
+Bu tablolar Power BI ile anlık raporlama için kullanılır.
 
-Rapor ve Dashboard hazırlamak
+Dashboard hazırlamak
 
-Power BI ile en popüler şehirler, aylara göre rezervasyon dağılımı, müşteri sayısındaki değişim gibi KPI’lar göstermek.
+Gold tabakası + Kusto Table verileri kullanarak Power BI raporları hazırlamak.
 
-🔄 Adımlar (Öğrenci Rehberi)
+🔄 Adımlar (Fabric Öğrenci Rehberi)
 1️⃣ Bronze Katmanı – Ham Veri
 
-Görev: Veriyi olduğu gibi saklamak.
+Dosyaları veya stream veriyi Lakehouse Bronze’a yükle.
 
-Örnek dosya: reservation_raw.csv
-
-Yapılacaklar:
-
-Dosyaları ADLS Gen2 (Azure) veya Lakehouse (Fabric) içine yükleyin.
-
-Stream verisi simülatörü çalıştırabilirsiniz (Event Hubs veya Eventstream).
-
-Amaç: Her şeyin kaynağını saklamak, ileride veri kalitesi kontrolleri için referans oluşturmak.
+Eventstream simülatörü çalıştır: rezervasyon event’leri JSON olarak gelir.
 
 2️⃣ Silver Katmanı – Temizlenmiş Veri
 
-Görev: Ham veriyi temiz ve kullanıma hazır hale getirmek.
+Null değerleri doldur, duplicate kayıtları kaldır, tarihleri normalize et.
 
-Yapılacaklar:
+Silver tablosu artık analiz için hazırdır.
 
-Null değerleri temizle veya mantıklı default değer atayın.
+3️⃣ Gold Katmanı – Business Veri
 
-Tarih formatlarını standart hâle getirin (YYYY-MM-DD).
+Fakt tablolar (fact_booking) ve boyut tablolar (dim_hotel, dim_city, dim_date) oluştur.
 
-Duplicate kayıtları kaldırın (booking_id veya user_id+hotel_id).
+KPI’lar ve özet tabloları hesapla (rezervasyon sayısı, yoğun aylar, iptal oranı).
 
-Otel ve şehir adlarını normalize edin.
+4️⃣ Streaming → Kusto Table (KTM)
 
-Amaç: Analiz ve raporlamaya hazır veri oluşturmak.
+Eventstream’den gelen veriyi anlık Kusto Table’a yaz.
 
-3️⃣ Gold Katmanı – Business/Reporting Veri
+Bu sayede Power BI canlı dashboard ile gerçek zamanlı raporlama yapılabilir.
 
-Görev: İş kuralları ve özet tablolar oluşturmak.
+5️⃣ Dashboard
 
-Yapılacaklar:
+Gold tablosu + Kusto Table verisi kullanarak Power BI raporu oluştur.
 
-Boyut tabloları oluşturun: dim_hotel, dim_city, dim_date.
+Örnek sayfalar:
 
-Fakt tablosu oluşturun: fact_booking (rezervasyon sayısı, iptal durumu, gelir vb.).
+Popüler şehirler
 
-KPI’lar:
+Ay bazında rezervasyon dağılımı
 
-Şehirlere göre rezervasyon sayısı
+Anlık rezervasyon trendleri (streaming veri)
 
-Aylara göre yoğunluk
+🧩 Beklenen Çıktılar
 
-İptal oranı
+Her grup/öğrenci kendi pipeline’ını kuracak:
 
-Amaç: Yönetim için hızlı rapor üretilecek tablo oluşturmak.
+Bronze → Silver → Gold
 
-4️⃣ Power BI Dashboard
-
-Görev: Gold katmanı kullanarak görselleştirme yapmak.
-
-Önerilen sayfalar:
-
-Popüler Şehirler: Şehir bazlı rezervasyon sayısı
-
-Rezervasyon Trendleri: Ay bazında yoğunluk ve iptal oranları
-
-Müşteri Analizi: Yeni vs. tekrar eden müşteriler
-
-Amaç: Yönetim dashboard’u ve karar destek aracı hazırlamak.
-
-5️⃣ Orkestrasyon ve İzleme
-
-Azure Kullanıyorsanız:
-
-ADF Pipelines: Batch ve stream veri akışını kontrol etmek.
-
-Azure Monitor / Log Analytics: Pipeline ve notebook job’larını izlemek.
-
-Fabric Kullanıyorsanız:
-
-Eventstream & Lakehouse Notebooks: Ham veriden Gold’a kadar pipeline’ı kurmak.
-
-Warehouse Monitoring: Veri akışını ve tabloları takip etmek.
-
-🧩 Öğrencilerden Beklenen Çıktılar
-
-Her grup/öğrenci, kendi veri hattını (pipeline) kuracak.
-
-Bronze → Silver → Gold katmanlarını oluşturacak.
-
-Power BI dashboard’u hazırlayacak ve yönetim sunumu yapacak.
+Eventstream → Kusto Table → Power BI (realtime)
 
 Sonuç: HappyBooking Yönetim Dashboard’u 🎉
+
+Böylece artık streaming veri için direkt raporlama adımı Fabric ortamında net olarak eklendi: Eventstream → Kusto Table → Power BI.
