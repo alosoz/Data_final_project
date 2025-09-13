@@ -1,3 +1,63 @@
+📊 Rapor: Booking Pipeline – Microsoft Fabric
+1. Veri Kaynağı → Ingestion
+
+Araç: Eventstream (Fabric)
+
+İş: Kaynak dosya, API veya streaming veri alımı
+
+Çıktı: Bronze Layer (OneLake içinde ham veri)
+
+2. Bronze → Silver (Temizleme & Transformasyon)
+
+Araç: Fabric Lakehouse Notebook (PySpark veya Pandas)
+
+İş: Schema düzenleme, null/duplicate temizliği, veri kalitesi kontrolü
+
+Çıktı: Silver Layer (temizlenmiş tablo Lakehouse içinde)
+
+3. Silver → Gold (Modelleme & Hazırlık)
+
+Araç:
+
+Fabric Lakehouse (Delta tablolar ile modelleme)
+
+Fabric Data Warehouse (SQL-based modelleme)
+
+İş: Join, aggregation, business rules
+
+Çıktı: Gold Layer (raporlamaya hazır business veri modeli)
+
+4. Analiz & Görselleştirme
+
+Araç: Power BI (Fabric entegre)
+
+İş: Dashboard ve raporların hazırlanması (Fabric içinden direkt erişim)
+
+Çıktı: Self-service BI & raporlama
+
+5. Orkestrasyon & İzleme
+
+Araç:
+
+Fabric Data Pipeline (ADF benzeri orchestrator)
+
+Fabric Monitoring (pipeline + eventstream izleme)
+
+✅ Özet Karşılaştırma
+
+Azure’da ingestion için ADF kullanılırken Fabric’te Eventstream öne çıkıyor.
+
+Azure’da transform için Databricks kullanılırken Fabric’te Lakehouse Notebook.
+
+Azure’da SQL katmanı için Synapse SQL Pool gerekirken Fabric’te Data Warehouse gömülü.
+
+Fabric’in artısı: tek platformda entegre, OneLake üzerinden tüm katmanlara erişim.
+
+
+
+
+
+
 # Booking.com — Microsoft Fabric Data Engineering Pipeline
 
 **Doküman:** Adım adım proje dosyası ve rehberi
