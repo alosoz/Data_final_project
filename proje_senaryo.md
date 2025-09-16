@@ -85,4 +85,3 @@ HappyBooking sizi Data Engineer ekibine aldı. Görevleriniz:
     
         Sonuç: HappyBooking Yönetim Dashboard’u 🎉
 
-Böylece artık streaming veri için direkt raporlama adımı Fabric ortamında net olarak eklendi: Eventstream → Kusto Table → Power BI.
