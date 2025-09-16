@@ -53,7 +53,7 @@ Proje; **Azure Databricks** üzerinde dönüşümler, **Azure Synapse**’te ana
 - **Pipeline Sağlığı:** Veri kalitesi sorunları, darboğazlar, loglar  
 - **Maliyet & Optimizasyon:** Spot node, auto-stop, veri boyutu küçültme önerileri  
 - **Mimari Gerekçeler:** Neden bu servisler ve veri modeli seçildi?  
-- **Kısıtlar & Geliştirmeler:** Ölçeklenebilirlik, ileri ML, CI/CD, dbt  
+- **Kısıtlar & Geliştirmeler:** Ölçeklenebilirlik, CI/CD, dbt  
 
 ---
 
